@@ -6,7 +6,7 @@ function Register() {
     <>
         <div className='login-container'>
             <div className='login'>
-              <p className='title'>Create an acount to get started</p>
+              <p className='titler'>Create an acount to get started</p>
               <div className='row-register'>
                 <div className='input-container'>
                     <p className='subtitle'>Name</p>
@@ -22,7 +22,7 @@ function Register() {
                     <p className='subtitle'>Password</p>
                     <input type="text" name="password" id="password" className='input' placeholder='Rositapass'/>
                 </div>
-              <center><input type="submit" name='signup' className='button' value="Sign up"/></center>
+              <center><input type="submit" name='signup' className='buttonr' value="Sign up"/></center>
 
               <div className='register-part'>
                 <p className='register-text'>Already have an acount ?</p> <a href="/" className='href'>Login</a>

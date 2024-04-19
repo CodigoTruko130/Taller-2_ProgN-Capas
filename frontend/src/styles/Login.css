@@ -36,7 +36,7 @@ a{
     justify-content: center;
 }
 
-.login{
+.loginr{
     background-color: #ffffff;
     display: flex;
     flex-direction: column;
@@ -58,20 +58,19 @@ a{
 
 input.input{
     width: 100%;
-    padding: 2% 0;
+    padding:3% 0;
     margin-bottom: 2%;
     border-radius: 1vh;
     padding-left: 2%;
 }
 
 input.button{
-    padding: 2% 0;
+    padding: 3% 0;
     background-color: #000000;
     border-color: transparent;
     color: white;
     border-radius: 1vh;
-    width: 80%;
-    margin-left: 2%;
+    width: 100%;
     margin-top: 1%;
 }
 
