@@ -9,6 +9,7 @@ function App() {
     <Router>
       <Routes>
         <Route path='/'element={<Login/>} ></Route>
+        <Route path='/Register'element={<Register/>} ></Route>
       </Routes>
     </Router>
     </>
