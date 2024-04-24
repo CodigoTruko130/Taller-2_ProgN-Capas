@@ -1,9 +1,6 @@
 package com.codigotruko.taller2.controllers;
 
-import com.codigotruko.taller2.domain.dtos.AuthSigninResponseDTO;
-import com.codigotruko.taller2.domain.dtos.GeneralResponse;
-import com.codigotruko.taller2.domain.dtos.LoginUserDTO;
-import com.codigotruko.taller2.domain.dtos.SaveUserDTO;
+import com.codigotruko.taller2.domain.dtos.*;
 import com.codigotruko.taller2.domain.entities.User;
 import com.codigotruko.taller2.services.UserService;
 import com.codigotruko.taller2.utils.ErrorMapper;
@@ -31,6 +28,27 @@ public class LibraryRestController {
             return GeneralResponse.getResponse(
                 "User list found",
                 userService.findAll());
+
+    }
+
+    @GetMapping("/user/{username}")
+    public ResponseEntity<GeneralResponse> getProfile(@PathVariable String username) {
+        User user = userService.findByUsername(username);
+
+        if (user == null || !user.getActive()) {
+            return GeneralResponse.getResponse(
+                    "Error, usuario inactivo");
+        }
+
+        UserProfileDTO userProfileDTO = new UserProfileDTO();
+        userProfileDTO.setUsername(user.getUsername());
+        userProfileDTO.setEmail(user.getEmail());
+        userProfileDTO.setFechaContratacion(user.getFechaContratacion());
+        userProfileDTO.setRol(user.getRol());
+
+        return GeneralResponse.getResponse(
+                "User list found",
+                userProfileDTO);
 
     }
 
@@ -93,14 +111,15 @@ public class LibraryRestController {
     }
 
     @PatchMapping("/user/change-password")
-    public ResponseEntity<?> updatePassword(@RequestBody Map<String, String> requestBody) {
-        String username = requestBody.get("username");
-        String newPassword = requestBody.get("newPassword");
+    public ResponseEntity<?> updatePassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO) {
+        String username = changePasswordDTO.getUsername();
+        String newPassword = changePasswordDTO.getNewPassword();
 
         User user = userService.findByUsername(username);
 
-        if (user == null)
+        if (user == null) {
             return ResponseEntity.notFound().build();
+        }
 
         userService.updatePassword(username, newPassword);
 

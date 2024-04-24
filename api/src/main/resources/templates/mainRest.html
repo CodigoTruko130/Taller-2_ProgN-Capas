@@ -105,11 +105,11 @@
                     <div class="form-group">
                         <label>
                             New Password:
-                            <input name="newPassword" id="newPassword-field" class="form-control"/>
+                            <input name="newPassword-field-{{username}}" id="newPassword-field-{{username}}" class="form-control"/>
                         </label>
                     </div>
                 </form>
-                <button onclick="changePasswordUser('{{username}}', document.getElementById('newPassword-field').value)"
+                <button onclick="changePasswordUser('{{username}}', document.getElementById('newPassword-field-{{username}}').value)"
                         class="btn btn-warning">Change Password
                 </button>
 
@@ -162,23 +162,22 @@
     }
 
 
-    const changePasswordUser = async(username, newPassword) => {
+    const changePasswordUser = async (username, newPassword) => {
         const data = { username, newPassword };
-        const response = await fetch(`/user/change-password`,{
+        const response = await fetch(`/user/change-password`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
+        });
 
-        })
-
-        if(response.ok)
+        if (response.ok) {
             await renderTable();
-        else
+        } else {
             alert("Something went wrong");
-    }
-
+        }
+    };
 
     const createUserElement = (info) => {
         const holder = document.createElement("tr");
@@ -192,7 +191,7 @@
         <td>${info.active}</td>
         <td class="button-container">
         <button onclick="deleteUser('${info.username}')" class="btn btn-danger"> Delete </button>
-        <button onclick="toggleActiveUser('${info.username}')" class="btn btn-warning"> Toggle Actice </button>
+        <button onclick="toggleActiveUser('${info.username}')" class="btn btn-warning"> Toggle Active </button>
 
         <label>
             New Password:

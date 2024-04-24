@@ -35,7 +35,7 @@ public class LibraryController {
         return "login";
     }
 
-    @GetMapping("/user/{username}")
+    @GetMapping("/profile/{username}")
     public String profileUser(@PathVariable String username, Model model) {
         User user = userService.findByUsername(username);
 
