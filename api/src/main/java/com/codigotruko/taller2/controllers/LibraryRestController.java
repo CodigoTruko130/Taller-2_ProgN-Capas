@@ -77,7 +77,6 @@ public class LibraryRestController {
     }
 
 
-
     @DeleteMapping("/user/delete/{username}")
     public ResponseEntity<?> deleteUser(@PathVariable String username) {
         User user = userService.findByUsername(username);
