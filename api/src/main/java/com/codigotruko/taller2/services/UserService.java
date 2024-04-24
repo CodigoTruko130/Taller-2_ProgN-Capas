@@ -10,4 +10,6 @@ public interface UserService {
     List<User> findAll();
     User findByUsername(String username);
     void deleteByUsername(String username);
+    void toggleActive(String username);
+    void updatePassword(String username, String newPassword);
 }

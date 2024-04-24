@@ -14,9 +14,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("")
 public class LibraryRestController {
     private final UserService userService;
     private final ErrorMapper errorMapper;
@@ -26,7 +27,7 @@ public class LibraryRestController {
         this.errorMapper = errorMapper;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/user/all")
     public ResponseEntity<GeneralResponse> findAll() {
             return GeneralResponse.getResponse(
                 "User list found",
@@ -34,7 +35,7 @@ public class LibraryRestController {
 
     }
 
-    @PostMapping("/save")
+    @PostMapping("/user")
     public ResponseEntity<GeneralResponse> saveUser(@RequestBody @Valid SaveUserDTO info/*, BindingResult errors*/) {
         /*if (errors.hasErrors()) {
             return GeneralResponse.getResponse(
@@ -56,7 +57,7 @@ public class LibraryRestController {
         return GeneralResponse.getResponse("User saved");
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/signin ")
     public ResponseEntity<String> loginUser(@RequestBody @Valid LoginUserDTO info, BindingResult errors){
 
         var _user = userService.findByUsername(info.getUsername());
@@ -85,7 +86,7 @@ public class LibraryRestController {
     }
 
 
-    @DeleteMapping("/{username}")
+    @DeleteMapping("/user/{username}")
     public ResponseEntity<?> deleteUser(@PathVariable String username) {
         User user = userService.findByUsername(username);
         if (user == null) {
@@ -97,6 +98,31 @@ public class LibraryRestController {
         userService.deleteByUsername(username);
 
         return GeneralResponse.getResponse("User Deleted");
+    }
+
+    @PatchMapping("/user/change-password/{username}")
+    public ResponseEntity<?> updatePassword(@PathVariable String username, @RequestBody Map<String, User> password) {
+        User user = userService.findByUsername(username);
+
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+
+        return GeneralResponse.getResponse("Password Changed");
+    }
+
+
+    @PatchMapping("/user/toggle-active/{username}")
+    public ResponseEntity<?> toggleActive(@PathVariable String username, @RequestBody Map<String, User> password) {
+        User user = userService.findByUsername(username);
+
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+
+        return GeneralResponse.getResponse("Password Changed");
     }
 
 

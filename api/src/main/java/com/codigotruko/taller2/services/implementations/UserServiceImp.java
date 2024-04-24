@@ -5,6 +5,7 @@ import com.codigotruko.taller2.domain.entities.User;
 import com.codigotruko.taller2.services.UserService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,9 +13,9 @@ import java.util.List;
 @Service
 public class UserServiceImp implements UserService {
     public static final List<User> users = new ArrayList<>(Arrays.asList(
-            new User("John", "12345678","John@Onichan.com"),
-            new User("Jane", "12345678","Jane@Onichan.com"),
-            new User("Poul", "12345678", "Poul@Onichan.com")
+            new User("John", "12345678", LocalDate.now(), "John@Onichan.com", "user", false),
+            new User("Jane", "12345678", LocalDate.now(),"Jane@Onichan.com", "user", false),
+            new User("Poul", "12345678", LocalDate.now(),"Poul@Onichan.com", "user", false)
     ));
 
     @Override
@@ -44,4 +45,21 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void deleteByUsername(String username) {users.removeIf(user -> user.getUsername().equals(username));}
+
+    @Override
+    public void toggleActive(String username) {
+        User user = findByUsername(username);
+
+        if(user != null){
+            user.setActive(!user.getActive());
+        }
+    }
+
+    @Override
+    public void updatePassword(String username, String newPassword) {
+        User user = findByUsername(username);
+
+        if (user != null)
+            user.setPassword(newPassword);
+    }
 }
