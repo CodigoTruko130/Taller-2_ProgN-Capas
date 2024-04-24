@@ -14,8 +14,8 @@ import java.util.List;
 public class UserServiceImp implements UserService {
     public static final List<User> users = new ArrayList<>(Arrays.asList(
             new User("John", "12345678", LocalDate.now(), "John@Onichan.com", "user", false),
-            new User("Jane", "12345678", LocalDate.now(),"Jane@Onichan.com", "user", false),
-            new User("Poul", "12345678", LocalDate.now(),"Poul@Onichan.com", "user", false)
+            new User("Jane", "12345678", LocalDate.now(),"Jane@Onichan.com", "user", true),
+            new User("Poul", "12345678", LocalDate.now(),"Poul@Onichan.com", "admin", false)
     ));
 
     @Override
@@ -29,7 +29,10 @@ public class UserServiceImp implements UserService {
 
         user.setUsername(info.getUsername());
         user.setPassword(info.getPassword());
+        user.setFechaContratacion(LocalDate.now());
         user.setEmail(info.getEmail());
+        user.setRol("user");
+        user.setActive(false);
     }
 
     @Override

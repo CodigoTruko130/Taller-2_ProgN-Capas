@@ -72,8 +72,7 @@
                 email: data.get("email")
             }
 
-            console.log(_user);
-            const response = await fetch("/api/auth/save", {
+            const response = await fetch("/user", {
                     method: "POST",
                     body: JSON.stringify(_user),
                     headers: {
@@ -83,7 +82,6 @@
 
             )
 
-            console.log(response);
             if (response.ok){
                 window.location.href = "/login";
             }

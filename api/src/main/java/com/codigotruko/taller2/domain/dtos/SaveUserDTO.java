@@ -3,6 +3,8 @@ package com.codigotruko.taller2.domain.dtos;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class SaveUserDTO {
     @NotBlank(message = "El nombre de usuario no puede estar vacío")
@@ -14,5 +16,6 @@ public class SaveUserDTO {
     @NotBlank(message = "El correo electrónico no puede estar vacío")
     @Email(message = "El correo electrónico debe tener un formato válido")
     private String email;
+
 
 }

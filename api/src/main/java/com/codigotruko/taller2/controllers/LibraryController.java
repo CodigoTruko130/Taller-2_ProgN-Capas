@@ -1,6 +1,8 @@
 package com.codigotruko.taller2.controllers;
 
 import com.codigotruko.taller2.domain.dtos.SaveUserDTO;
+import com.codigotruko.taller2.domain.dtos.UserProfileDTO;
+import com.codigotruko.taller2.domain.entities.User;
 import com.codigotruko.taller2.services.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +35,22 @@ public class LibraryController {
         return "login";
     }
 
-    @GetMapping("/{username}")
-    public String profileUser(@PathVariable String username, Model model){
-        model.addAttribute("user", userService.findByUsername(username));
+    @GetMapping("/user/{username}")
+    public String profileUser(@PathVariable String username, Model model) {
+        User user = userService.findByUsername(username);
 
+        if (user == null || !user.getActive()) {
+            return "the-error";
+        }
+        UserProfileDTO userProfileDTO = new UserProfileDTO();
+        userProfileDTO.setUsername(user.getUsername());
+        userProfileDTO.setEmail(user.getEmail());
+        userProfileDTO.setFechaContratacion(user.getFechaContratacion());
+        userProfileDTO.setRol(user.getRol());
+        model.addAttribute("user", userProfileDTO);
         return "main-profile";
     }
+
 
     @GetMapping("/rest")
     public String mainRest(Model model){

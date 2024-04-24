@@ -34,7 +34,10 @@
                 <tr class="table-primary">
                     <th scope="col">Username</th>
                     <th scope="col">Password</th>
+                    <th scope="col">Fecha de contratacion</th>
                     <th scope="col">Email</th>
+                    <th scope="col">Rol</th>
+                    <th scope="col">Activo</th>
                 </tr>
             </thead>
             <tbody>
@@ -47,7 +50,16 @@
                     {{password}}
                 </td>
                 <td>
+                    {{fechaContratacion}}
+                </td>
+                <td>
                     {{email}}
+                </td>
+                <td>
+                    {{rol}}
+                </td>
+                <td>
+                    {{active}}
                 </td>
             </tr>
             {{/users}}

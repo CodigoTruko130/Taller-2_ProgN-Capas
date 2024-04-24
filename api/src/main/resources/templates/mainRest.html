@@ -23,6 +23,17 @@
             gap: 16px;
             flex-direction: column;
         }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .button-container button {
+            flex-grow: 1;
+            margin-right: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -59,7 +70,10 @@
         <tr class="table-primary">
             <th scope="col">Username</th>
             <th scope="col">Password</th>
+            <th scope="col">Fecha de contratacion</th>
             <th scope="col">Email</th>
+            <th scope="col">Rol</th>
+            <th scope="col">Activo</th>
             <th scope="col">Action</th>
         </tr>
         </thead>
@@ -73,10 +87,32 @@
                 {{password}}
             </td>
             <td>
+                {{fechaContratacion}}
+            </td>
+            <td>
                 {{email}}
             </td>
             <td>
+                {{rol}}
+            </td>
+            <td>
+                {{active}}
+            </td>
+            <td class="button-container">
                 <button onclick="deleteUser('{{username}}')" class="btn btn-danger"> Delete </button>
+                <button onclick="toggleActiveUser('{{username}}')" class="btn btn-warning"> Toggle Active </button>
+                <form id="changePassword-form">
+                    <div class="form-group">
+                        <label>
+                            New Password:
+                            <input name="newPassword" id="newPassword-field" class="form-control"/>
+                        </label>
+                    </div>
+                </form>
+                <button onclick="changePasswordUser('{{username}}', document.getElementById('newPassword-field').value)"
+                        class="btn btn-warning">Change Password
+                </button>
+
             </td>
         </tr>
         {{/users}}
@@ -90,12 +126,12 @@
     const container = document.querySelector("#user-list-container");
 
     const fetchUsers = async () => {
-        const response = await fetch("api/auth/all");
+        const response = await fetch("/user/all");
         return (await response.json()).data;
     }
 
     const deleteUser = async(username) => {
-        const response = await fetch(`/api/auth/${username}`,{
+        const response = await fetch(`/user/delete/${username}`,{
             method: "DELETE"
         })
 
@@ -107,15 +143,65 @@
         }
     }
 
+
+    const toggleActiveUser = async(username) => {
+        const data = { username };
+        const response = await fetch(`/user/toggle-active`,{
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+
+        })
+
+        if(response.ok)
+            await renderTable();
+        else
+            alert("Something went wrong");
+    }
+
+
+    const changePasswordUser = async(username, newPassword) => {
+        const data = { username, newPassword };
+        const response = await fetch(`/user/change-password`,{
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+
+        })
+
+        if(response.ok)
+            await renderTable();
+        else
+            alert("Something went wrong");
+    }
+
+
     const createUserElement = (info) => {
         const holder = document.createElement("tr");
         holder.dataset.id = info.id;
         holder.innerHTML = `
         <td>${info.username}</td>
         <td>${info.password}</td>
+        <td>${info.fechaContratacion}</td>
         <td>${info.email}</td>
-        <td>
+        <td>${info.rol}</td>
+        <td>${info.active}</td>
+        <td class="button-container">
         <button onclick="deleteUser('${info.username}')" class="btn btn-danger"> Delete </button>
+        <button onclick="toggleActiveUser('${info.username}')" class="btn btn-warning"> Toggle Actice </button>
+
+        <label>
+            New Password:
+            <input name="newPassword-field-${info.username}" id="newPassword-field-${info.username}" class="form-control"/>
+        </label>
+
+        <button onclick="changePasswordUser('${info.username}', document.getElementById('newPassword-field-${info.username}').value)"
+                class="btn btn-warning">Change Password
+        </button>
         </td>
         `
 
@@ -140,10 +226,11 @@
             const _user = {
                 username: data.get("username"),
                 password: data.get("password"),
-                email: data.get("email")
+                email: data.get("email"),
             }
 
-            const response = await fetch("/api/auth/save", {
+
+            const response = await fetch("/user", {
                     method: "POST",
                     body: JSON.stringify(_user),
                     headers: {
@@ -151,6 +238,8 @@
                     }
                 }
             )
+
+
 
             if (response.ok){
                 await renderTable();

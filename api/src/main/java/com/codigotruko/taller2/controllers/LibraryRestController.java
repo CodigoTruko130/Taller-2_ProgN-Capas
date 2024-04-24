@@ -1,5 +1,6 @@
 package com.codigotruko.taller2.controllers;
 
+import com.codigotruko.taller2.domain.dtos.AuthSigninResponseDTO;
 import com.codigotruko.taller2.domain.dtos.GeneralResponse;
 import com.codigotruko.taller2.domain.dtos.LoginUserDTO;
 import com.codigotruko.taller2.domain.dtos.SaveUserDTO;
@@ -7,13 +8,11 @@ import com.codigotruko.taller2.domain.entities.User;
 import com.codigotruko.taller2.services.UserService;
 import com.codigotruko.taller2.utils.ErrorMapper;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -57,36 +56,29 @@ public class LibraryRestController {
         return GeneralResponse.getResponse("User saved");
     }
 
-    @PostMapping("/auth/signin ")
-    public ResponseEntity<String> loginUser(@RequestBody @Valid LoginUserDTO info, BindingResult errors){
-
-        var _user = userService.findByUsername(info.getUsername());
-
-        if (errors.hasErrors() || _user == null) {
-            return new ResponseEntity<>(
-                    "BAD REQUEST XD",
-                    HttpStatus.BAD_REQUEST
-            );
+    @PostMapping("/auth/signin")
+    public ResponseEntity<?> loginUser(@RequestBody @Valid LoginUserDTO info, BindingResult errors) {
+        if (errors.hasErrors()) {
+            return new ResponseEntity<>("BAD REQUEST XD", HttpStatus.BAD_REQUEST);
         }
 
-        if (_user.getPassword().equals(info.getPassword())) {
-            return new ResponseEntity<>(
-                    "User Login",
-                    HttpStatus.OK
-            );
+        User user = userService.findByUsername(info.getUsername());
 
-        }else{
-            return new ResponseEntity<>(
-                    "BAD REQUEST XD",
-                    HttpStatus.BAD_REQUEST
-            );
+        if (user == null || !user.getPassword().equals(info.getPassword())) {
+            return new ResponseEntity<>("BAD REQUEST XD", HttpStatus.BAD_REQUEST);
         }
 
+        AuthSigninResponseDTO responseDTO = new AuthSigninResponseDTO();
+        responseDTO.setUsername(user.getUsername());
+        responseDTO.setEmail(user.getEmail());
+        responseDTO.setRol(user.getRol());
 
+        return ResponseEntity.ok(responseDTO);
     }
 
 
-    @DeleteMapping("/user/{username}")
+
+    @DeleteMapping("/user/delete/{username}")
     public ResponseEntity<?> deleteUser(@PathVariable String username) {
         User user = userService.findByUsername(username);
         if (user == null) {
@@ -100,29 +92,35 @@ public class LibraryRestController {
         return GeneralResponse.getResponse("User Deleted");
     }
 
-    @PatchMapping("/user/change-password/{username}")
-    public ResponseEntity<?> updatePassword(@PathVariable String username, @RequestBody Map<String, User> password) {
+    @PatchMapping("/user/change-password")
+    public ResponseEntity<?> updatePassword(@RequestBody Map<String, String> requestBody) {
+        String username = requestBody.get("username");
+        String newPassword = requestBody.get("newPassword");
+
         User user = userService.findByUsername(username);
 
-        if (user == null) {
+        if (user == null)
             return ResponseEntity.notFound().build();
-        }
 
+        userService.updatePassword(username, newPassword);
 
         return GeneralResponse.getResponse("Password Changed");
     }
 
 
-    @PatchMapping("/user/toggle-active/{username}")
-    public ResponseEntity<?> toggleActive(@PathVariable String username, @RequestBody Map<String, User> password) {
+    @PatchMapping("/user/toggle-active")
+    public ResponseEntity<?> toggleActive(@RequestBody Map<String, String> requestBody) {
+        String username = requestBody.get("username");
+
         User user = userService.findByUsername(username);
 
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
 
+        userService.toggleActive(username);
 
-        return GeneralResponse.getResponse("Password Changed");
+        return GeneralResponse.getResponse("Toggle Active");
     }
 
 

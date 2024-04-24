@@ -5,12 +5,11 @@
     <title>Profile</title>
 </head>
 <body>
-    {{#user}}
-    <div>
-        <h1>{{username}}</h1>
-        <p>Password: {{password}}</p>
-        <p>Email: {{email}}</p>
-    </div>
-    {{/user}}
+<div>
+    <h1>{{user.username}}</h1>
+    <p>Email: {{user.email}}</p>
+    <p>Rol: {{user.rol}}</p>
+    <p>Fecha de contratacion: {{user.fechaContratacion}}</p>
+</div>
 </body>
 </html>
